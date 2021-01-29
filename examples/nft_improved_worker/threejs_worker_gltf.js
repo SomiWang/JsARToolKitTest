@@ -90,8 +90,8 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     var pivotRoot = new THREE.Object3D();
 
     //Video
-    dogLayer = document.getElementById('dogLayer');
-
+    dogLayer = document.createElement('dogLayer');
+    dogLayer.src = "https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/Xxtralab/Xxtralab.github.io/master/three.js/webM/DogLayer.webm";
     dogLayer.load(); // must call after setting/changing source
     //dogLayer.play();
 
@@ -104,7 +104,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
 
     let geometry1 = new THREE.PlaneGeometry(155, 110);
     let mesh1 = new THREE.Mesh(geometry1, material1);
-    mesh1.position.set(77,35, -55);
+    mesh1.position.set(77, 35, -55);
     //mesh1.rotation.z = Math.PI / 2;
     pivotRoot.add(mesh1);
     //markerRoot1.add(mesh1);
@@ -273,9 +273,13 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
         time += dt;
         lasttime = now;
 
-        if (!world || video.readyState !== video.HAVE_ENOUGH_DATA) {
+        if (!world || dogLayer.readyState !== dogLayer.HAVE_ENOUGH_DATA) {
             root.visible = false;
+            dogLayer.pause();
+            dogLayer.currentTime = 0;
         } else {
+            dogLayer.currentTime = 0;
+            dogLayer.play();
             root.visible = true;
 
             // interpolate matrix
