@@ -91,7 +91,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
 
     //Video
     dogLayer = document.createElement('dogLayer');
-    dogLayer.src = "https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/Xxtralab/Xxtralab.github.io/master/three.js/webM/DogLayer.webm";
+    dogLayer.src = "../webM/DogLayer.webm";
     dogLayer.load(); // must call after setting/changing source
     //dogLayer.play();
 
