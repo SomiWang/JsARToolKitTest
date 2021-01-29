@@ -90,8 +90,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     var pivotRoot = new THREE.Object3D();
 
     //Video
-    dogLayer = document.createElement('dogLayer');
-    dogLayer.src = "../webM/DogLayer.webm";
+    dogLayer = document.getElementById('dogLayer');
     dogLayer.load(); // must call after setting/changing source
     //dogLayer.play();
 
