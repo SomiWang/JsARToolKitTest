@@ -1,6 +1,7 @@
 var model;
 var clock = new THREE.Clock();
 var mixers = [];
+var dogLayer;
 
 function isMobile() {
     return /Android|mobile|iPad|iPhone/i.test(navigator.userAgent);
@@ -89,7 +90,7 @@ function start( container, marker, video, input_width, input_height, canvas_draw
     var pivotRoot = new THREE.Object3D();
 
             //Video
-            var dogLayer = document.getElementById('dogLayer');
+            dogLayer = document.getElementById('dogLayer');
 
             dogLayer.load(); // must call after setting/changing source
 
@@ -103,7 +104,7 @@ function start( container, marker, video, input_width, input_height, canvas_draw
             let geometry1 = new THREE.PlaneGeometry(155, 110);
             let mesh1 = new THREE.Mesh(geometry1, material1);
             mesh1.position.set(77, 0, -55);
-            mesh1.rotation.x = -Math.PI / 2;
+            //mesh1.rotation.x = -Math.PI / 2;
             pivotRoot.add(mesh1);
             //markerRoot1.add(mesh1);
 
@@ -272,8 +273,12 @@ function start( container, marker, video, input_width, input_height, canvas_draw
 
         if (!world) {
             root.visible = false;
+            dogLayer.currentTime = 0;
+            dogLayer.play();
         } else {
             root.visible = true;
+            dogLayer.play();
+
 
             // interpolate matrix
             for (var i = 0; i < 16; i++) {
