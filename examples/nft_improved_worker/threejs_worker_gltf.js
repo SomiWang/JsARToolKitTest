@@ -25,9 +25,9 @@ var trackedMatrix = {
 }
 
 var markers = {
-    pinball: {
-        width: 1637,
-        height: 2048,
+    Postcard: {
+        width: 877,
+        height: 612,
         dpi: 215,
         url: "../examples/DataNFT/Postcard"
     }
@@ -83,8 +83,43 @@ function start( container, marker, video, input_width, input_height, canvas_draw
         new THREE.MeshNormalMaterial()
     );
 
-    var root = new THREE.Object3D();
+    var root = new THREE.Group();
     scene.add(root);
+
+    var pivotRoot = new THREE.Object3D();
+
+            //Video
+            var dogLayer = document.getElementById('dogLayer');
+
+            dogLayer.load(); // must call after setting/changing source
+
+            videoTexture = new THREE.VideoTexture(dogLayer);
+            //videoTexture.minFilter = THREE.LinearFilter;
+            //videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.format = THREE.RGBAFormat;
+
+            let material1 = new THREE.MeshBasicMaterial({ map: videoTexture, transparent: true });
+
+            let geometry1 = new THREE.PlaneGeometry(155, 110);
+            let mesh1 = new THREE.Mesh(geometry1, material1);
+            mesh1.position.set(77, 0, -55);
+            mesh1.rotation.x = -Math.PI / 2;
+            pivotRoot.add(mesh1);
+            //markerRoot1.add(mesh1);
+
+            // the invisibility cloak (box with a hole)
+            let geometry0 = new THREE.BoxGeometry(16, 10, 14);
+            geometry0.faces.splice(4, 2); // make hole by removing top two triangles
+
+            let material0 = new THREE.MeshBasicMaterial({
+                colorWrite: false
+            });
+
+            let mesh0 = new THREE.Mesh(geometry0, material0);
+            mesh0.scale.set(8, 8, 8);
+            mesh0.position.set(77, -47, -55);
+            pivotRoot.add(mesh0);
+            root.add(pivotRoot);
 
     /* Load Model */
     var threeGLTFLoader = new THREE.GLTFLoader();
