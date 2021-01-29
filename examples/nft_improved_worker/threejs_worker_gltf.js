@@ -121,6 +121,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     mesh0.scale.set(8, 8, 8);
     mesh0.position.set(77, -50, -55);
     pivotRoot.add(mesh0);
+    root.matrixAutoUpdate = false;
     root.add(pivotRoot);
 
     /* Load Model */
