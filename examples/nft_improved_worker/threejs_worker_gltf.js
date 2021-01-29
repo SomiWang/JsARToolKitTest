@@ -46,7 +46,7 @@ var setMatrix = function (matrix, value) {
     }
 };
 
-function start( container, marker, video, input_width, input_height, canvas_draw, render_update, track_update) {
+function start(container, marker, video, input_width, input_height, canvas_draw, render_update, track_update) {
     var vw, vh;
     var sw, sh;
     var pscale, sscale;
@@ -89,61 +89,61 @@ function start( container, marker, video, input_width, input_height, canvas_draw
 
     var pivotRoot = new THREE.Object3D();
 
-            //Video
-            dogLayer = document.getElementById('dogLayer');
+    //Video
+    dogLayer = document.getElementById('dogLayer');
 
-            dogLayer.load(); // must call after setting/changing source
-                        dogLayer.play();
+    dogLayer.load(); // must call after setting/changing source
+    //dogLayer.play();
 
-            videoTexture = new THREE.VideoTexture(dogLayer);
-            //videoTexture.minFilter = THREE.LinearFilter;
-            //videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.format = THREE.RGBAFormat;
+    videoTexture = new THREE.VideoTexture(dogLayer);
+    //videoTexture.minFilter = THREE.LinearFilter;
+    //videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.RGBAFormat;
 
-            let material1 = new THREE.MeshBasicMaterial({ map: videoTexture, transparent: true });
+    let material1 = new THREE.MeshBasicMaterial({ map: videoTexture, transparent: true });
 
-            let geometry1 = new THREE.PlaneGeometry(155, 110);
-            let mesh1 = new THREE.Mesh(geometry1, material1);
-            mesh1.position.set(77, 0, -55);
-            //mesh1.rotation.z = Math.PI / 2;
-            pivotRoot.add(mesh1);
-            //markerRoot1.add(mesh1);
+    let geometry1 = new THREE.PlaneGeometry(155, 110);
+    let mesh1 = new THREE.Mesh(geometry1, material1);
+    mesh1.position.set(77,35, -55);
+    //mesh1.rotation.z = Math.PI / 2;
+    pivotRoot.add(mesh1);
+    //markerRoot1.add(mesh1);
 
-            // the invisibility cloak (box with a hole)
-            let geometry0 = new THREE.BoxGeometry(16, 10, 14);
-            geometry0.faces.splice(4, 2); // make hole by removing top two triangles
+    // the invisibility cloak (box with a hole)
+    let geometry0 = new THREE.BoxGeometry(16, 10, 14);
+    geometry0.faces.splice(4, 2); // make hole by removing top two triangles
 
-            let material0 = new THREE.MeshBasicMaterial({
-                colorWrite: false
-            });
+    let material0 = new THREE.MeshBasicMaterial({
+        //colorWrite: false
+    });
 
-            let mesh0 = new THREE.Mesh(geometry0, material0);
-            mesh0.scale.set(8, 8, 8);
-            mesh0.position.set(77, -47, -55);
-            pivotRoot.add(mesh0);
-            root.add(pivotRoot);
+    let mesh0 = new THREE.Mesh(geometry0, material0);
+    mesh0.scale.set(8, 8, 8);
+    mesh0.position.set(77, -50, -55);
+    pivotRoot.add(mesh0);
+    root.add(pivotRoot);
 
     /* Load Model */
-    var threeGLTFLoader = new THREE.GLTFLoader();
+    //var threeGLTFLoader = new THREE.GLTFLoader();
 
-    threeGLTFLoader.load("../Data/models/Flamingo.glb", function (gltf) {
-            model = gltf.scene.children[0];
-            model.position.z = 0;
-            model.position.x = 100;
-            model.position.y = 100;
+    //threeGLTFLoader.load("../Data/models/Flamingo.glb", function (gltf) {
+    //        model = gltf.scene.children[0];
+    //        model.position.z = 0;
+    //        model.position.x = 100;
+    //        model.position.y = 100;
 
-            var animation = gltf.animations[0];
-            var mixer = new THREE.AnimationMixer(model);
-            mixers.push(mixer);
-            var action = mixer.clipAction(animation);
-            action.play();
+    //        var animation = gltf.animations[0];
+    //        var mixer = new THREE.AnimationMixer(model);
+    //        mixers.push(mixer);
+    //        var action = mixer.clipAction(animation);
+    //        action.play();
 
-            root.matrixAutoUpdate = false;
-            root.add(model);
-        }
-    );
+    //        root.matrixAutoUpdate = false;
+    //        root.add(model);
+    //    }
+    //);
 
-    var load = function() {
+    var load = function () {
         vw = input_width;
         vh = input_height;
 
@@ -183,7 +183,7 @@ function start( container, marker, video, input_width, input_height, canvas_draw
             marker: marker.url
         });
 
-        worker.onmessage = function(ev) {
+        worker.onmessage = function (ev) {
             var msg = ev.data;
             switch (msg.type) {
                 case "loaded": {
@@ -208,7 +208,7 @@ function start( container, marker, video, input_width, input_height, canvas_draw
                         var loader = document.getElementById('loading');
                         if (loader) {
                             loader.querySelector('.loading-text').innerText = 'Start the tracking!';
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 loader.parentElement.removeChild(loader);
                             }, 2000);
                         }
@@ -232,7 +232,7 @@ function start( container, marker, video, input_width, input_height, canvas_draw
 
     var world;
 
-    var found = function(msg) {
+    var found = function (msg) {
         if (!msg) {
             world = null;
         } else {
@@ -254,30 +254,28 @@ function start( container, marker, video, input_width, input_height, canvas_draw
         ]);
     }
 
-    var tick = function() {
+    var tick = function () {
         draw();
         requestAnimationFrame(tick);
 
-        if (mixers.length > 0) {
-            for (var i = 0; i < mixers.length; i++) {
-                mixers[i].update(clock.getDelta());
-            }
-        }
+        //if (mixers.length > 0) {
+        //    for (var i = 0; i < mixers.length; i++) {
+        //        mixers[i].update(clock.getDelta());
+        //    }
+        //}
     };
 
-    var draw = function() {
+    var draw = function () {
         render_update();
         var now = Date.now();
         var dt = now - lasttime;
         time += dt;
         lasttime = now;
 
-        if (!world) {
-            root.visible = false;          
+        if (!world || dogLayer.video.readyState !== video.HAVE_ENOUGH_DATA) {
+            root.visible = false;
         } else {
             root.visible = true;
-
-
 
             // interpolate matrix
             for (var i = 0; i < 16; i++) {
