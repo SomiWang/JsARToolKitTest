@@ -272,7 +272,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
         time += dt;
         lasttime = now;
 
-        if (!world || dogLayer.video.readyState !== video.HAVE_ENOUGH_DATA) {
+        if (!world || video.readyState !== video.HAVE_ENOUGH_DATA) {
             root.visible = false;
         } else {
             root.visible = true;
