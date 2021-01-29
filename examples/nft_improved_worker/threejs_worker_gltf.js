@@ -277,7 +277,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
             dogLayer.pause();
             dogLayer.currentTime = 0;
         } else {
-            dogLayer.currentTime = 0;
+            //dogLayer.currentTime = 0;
             dogLayer.play();
             root.visible = true;
 
