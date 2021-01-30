@@ -237,22 +237,22 @@
 
         });
 
-        GIFLoader('./cat.gif', async function (container) {
+        //GIFLoader('./cat.gif', async function (container) {
 
 
 
-            const ratio = container.width / container.height;
+        //    const ratio = container.width / container.height;
 
-            mesh.scale.set(100 * ratio, 100, 1);
-            mesh.position.set(300, 50, 0);
+        //    mesh.scale.set(100 * ratio, 100, 1);
+        //    mesh.position.set(300, 50, 0);
 
-            await texture.assign(container);
+        //    await texture.assign(container);
 
-            scene.add(mesh);
+        //    scene.add(mesh);
 
-            // Now loaded, "ready" event dispatched as well and "ready" boolean now true
+        //    // Now loaded, "ready" event dispatched as well and "ready" boolean now true
 
-        });
+        //});
 
 
         GIFLoader('./DogLayer.gif', async function (container) {
