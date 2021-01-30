@@ -260,11 +260,15 @@
 
 
             const ratio = container.width / container.height;
-
+            mesh.material = material = new THREE.MeshBasicMaterial({
+                map: new THREE.ComposedTexture(container),
+                transparent: true,
+                alphaTest: 0.1
+            });
             mesh.scale.set(100 * ratio, 100, 1);
             mesh.position.set(300, 50, 0);
 
-            await texture.assign(container);
+            //await texture.assign(container);
 
             scene.add(mesh);
 
