@@ -1,0 +1,293 @@
+<html>
+<head>
+    <title>THREE.ComposedTexture</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+    <script src="https://mevedia.com/share/three.min.js"></script>
+    <script src="https://mevedia.com/share/OrbitControls.js"></script>
+    <script src="https://mevedia.com/share/TransformControls.js"></script>
+    <script src="https://mevedia.com/share/gif.js"></script>
+    <script src="https://mevedia.com/share/upng.js"></script>
+    <script src="./ComposedTexture.js"></script>
+
+
+    <script src="https://threejs.org/examples/js/objects/Sky.js"></script>
+    <script src="https://mevedia.com/share/InfiniteGridHelper.js?c"></script>
+</head>
+<body>
+    <script>
+
+
+        // Copyright Mevedia UG - All Rights Reserved
+        // Author: Fyrestar <info@mevedia.com>
+
+        let mesh, renderer, scene, camera, controls;
+
+
+
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color('gray');
+
+        camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
+        camera.position.set(200, 100, 200);
+        camera.lookAt(new THREE.Vector3(0, 50, 0));
+
+        controls = new THREE.OrbitControls(camera, document.body);
+
+
+
+
+        sky = new THREE.Sky();
+        sky.scale.setScalar(450000);
+        scene.add(sky);
+
+        const effectController = {
+            turbidity: 10,
+            rayleigh: 2,
+            mieCoefficient: 0.005,
+            mieDirectionalG: 0.8,
+            luminance: 1,
+            inclination: 0.49,
+            azimuth: 0.25,
+            sun: ! true
+        };
+
+        const uniforms = sky.material.uniforms;
+        uniforms["turbidity"].value = effectController.turbidity;
+        uniforms["rayleigh"].value = effectController.rayleigh;
+        uniforms["mieCoefficient"].value = effectController.mieCoefficient;
+        uniforms["mieDirectionalG"].value = effectController.mieDirectionalG;
+        uniforms["sunPosition"].value.set(400000, 400000, 400000);
+
+
+
+        const grid = new THREE.InfiniteGridHelper(10, 100);
+        grid.material.depthWrite = false;
+        scene.add(grid);
+
+
+        const geometry = new THREE.PlaneBufferGeometry(1, 1);
+        const fileLoader = new THREE.FileLoader;
+        const textureLoader = new THREE.TextureLoader;
+
+
+        // Create ComposedTexture, can be used in advance
+
+        const texture = new THREE.ComposedTexture;
+
+        mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.DoubleSide
+        }));
+
+        mesh.scale.set(100, 100, 1);
+        mesh.position.y = 50;
+
+
+
+        // Loading a APNG
+
+        const PNGLoader = (function (url, complete) {
+
+
+            fileLoader.responseType = 'arraybuffer';
+            fileLoader.load(url, async function (data) {
+
+                const png = UPNG.decode(data);
+
+                const frames = [];
+
+                for (let src of png.frames) {
+
+                    if (!src.data)
+                        continue;
+
+                    const dst = {
+                        dims: {
+                            left: src.rect.x,
+                            top: src.rect.y,
+                            width: src.rect.width,
+                            height: src.rect.height
+                        },
+                        patch: src.data,
+                        blend: src.blend,
+                        delay: src.delay,
+                        disposalType: src.dispose
+                    };
+
+                    frames.push(dst);
+                }
+
+                const container = {
+                    downscale: false,
+                    width: png.width,
+                    height: png.height,
+                    frames: frames
+                };
+
+                complete(container);
+
+            });
+
+
+        });
+
+        // Loading a GIF
+
+        const GIFLoader = (function (url, complete) {
+
+
+            fileLoader.responseType = 'arraybuffer';
+            fileLoader.load(url, async function (data) {
+
+                const gif = new GIF(data);
+
+                /* Container, frames can be from any source, their structure is:
+
+                Either patch or image, if a arraybuffer is provided it will be converted to an Image
+                - patch (uncompressed Uint8Array)
+                - image (Image element)
+
+                - dims (left, top, width, height)
+                - disposalType (number 0-3)
+                - delay (number ms)
+
+                */
+
+
+                const container = {
+                    downscale: false,	// Canvas needs to be power of 2, by default size is upscaled (false)
+                    width: gif.raw.lsd.width,
+                    height: gif.raw.lsd.height,
+                    frames: gif.decompressFrames(true)
+                };
+
+                complete(container);
+
+            });
+
+
+        });
+
+
+
+        GIFLoader('./poof.gif', async function (container) {
+
+            const ratio = container.width / container.height;
+
+            const other = mesh.clone();
+            other.material = new THREE.MeshBasicMaterial({
+                map: new THREE.ComposedTexture(container),
+                transparent: true,
+                alphaTest: 0.5,
+                side: THREE.DoubleSide
+            });
+            other.scale.set(100 * ratio, 100, 1);
+            other.position.set(0, 50, 0);
+
+            scene.add(other);
+
+
+        });
+
+        PNGLoader('./pony.png', async function (container) {
+
+            const ratio = container.width / container.height;
+
+            const other = mesh.clone();
+            other.material = new THREE.MeshBasicMaterial({
+                map: new THREE.ComposedTexture(container),
+                transparent: true,
+                side: THREE.DoubleSide,
+                alphaTest: 0.1
+            });
+            other.scale.set(100 * ratio, 100, 1);
+            other.position.set(100, 50, 0);
+
+            scene.add(other);
+
+
+        });
+
+        PNGLoader('./rainbow.png', async function (container) {
+
+            const ratio = container.width / container.height;
+
+            const other = mesh.clone();
+            other.material = new THREE.MeshBasicMaterial({
+                map: new THREE.ComposedTexture(container),
+                transparent: true,
+                side: THREE.DoubleSide,
+                alphaTest: 0.1
+            });
+            other.scale.set(100 * ratio, 100, 1);
+            other.position.set(200, 50, 0);
+
+            scene.add(other);
+
+
+        });
+
+        GIFLoader('./cat.gif', async function (container) {
+
+
+
+            const ratio = container.width / container.height;
+
+            mesh.scale.set(100 * ratio, 100, 1);
+            mesh.position.set(300, 50, 0);
+
+            await texture.assign(container);
+
+            scene.add(mesh);
+
+            // Now loaded, "ready" event dispatched as well and "ready" boolean now true
+
+        });
+
+
+        GIFLoader('./DogLayer.gif', async function (container) {
+
+
+
+            const ratio = container.width / container.height;
+
+            mesh.scale.set(100 * ratio, 100, 1);
+            mesh.position.set(300, 50, 0);
+
+            await texture.assign(container);
+
+            scene.add(mesh);
+
+            // Now loaded, "ready" event dispatched as well and "ready" boolean now true
+
+        });
+
+
+        const clock = new THREE.Clock;
+
+        function animate() {
+
+            THREE.ComposedTexture.update(clock.getDelta());
+
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+
+        }
+
+        animate();
+
+    </script>
+</body>
+
+</html>
