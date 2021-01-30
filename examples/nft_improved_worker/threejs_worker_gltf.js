@@ -145,7 +145,8 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
 
         let material1 = new THREE.MeshBasicMaterial({
             map: gifTex,
-            transparent: true
+            transparent: true,
+            side: THREE.DoubleSide,
         });
 
         let geometry1 = new THREE.PlaneGeometry(155, 110);
