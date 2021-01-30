@@ -90,9 +90,9 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     var pivotRoot = new THREE.Object3D();
 
     //Video
-    dogLayer = document.getElementById('dogLayer');
+    dogLayer = document.getElementById('testMov');
     dogLayer.load(); // must call after setting/changing source
-    //dogLayer.play();
+    dogLayer.play();
 
     videoTexture = new THREE.VideoTexture(dogLayer);
     //videoTexture.minFilter = THREE.LinearFilter;
@@ -272,13 +272,13 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
         time += dt;
         lasttime = now;
 
-        if (!world || dogLayer.readyState !== dogLayer.HAVE_ENOUGH_DATA) {
+        if (!world /*|| dogLayer.readyState !== dogLayer.HAVE_ENOUGH_DATA*/) {
             root.visible = false;
-            dogLayer.pause();
-            dogLayer.currentTime = 0;
+            //dogLayer.pause();
+            //dogLayer.currentTime = 0;
         } else {
             //dogLayer.currentTime = 0;
-            dogLayer.play();
+            ///dogLayer.play();
             root.visible = true;
 
             // interpolate matrix
