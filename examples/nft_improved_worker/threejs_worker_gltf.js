@@ -46,6 +46,8 @@ var setMatrix = function (matrix, value) {
     }
 };
 
+const fileLoader = new THREE.FileLoader;
+
 const GIFLoader = (function (url, complete) {
 
 
