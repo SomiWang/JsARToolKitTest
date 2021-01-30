@@ -46,6 +46,41 @@ var setMatrix = function (matrix, value) {
     }
 };
 
+const GIFLoader = (function (url, complete) {
+
+
+    fileLoader.responseType = 'arraybuffer';
+    fileLoader.load(url, async function (data) {
+
+        const gif = new GIF(data);
+
+        /* Container, frames can be from any source, their structure is:
+
+        Either patch or image, if a arraybuffer is provided it will be converted to an Image
+        - patch (uncompressed Uint8Array)
+        - image (Image element)
+
+        - dims (left, top, width, height)
+        - disposalType (number 0-3)
+        - delay (number ms)
+
+        */
+
+
+        const container = {
+            downscale: false,	// Canvas needs to be power of 2, by default size is upscaled (false)
+            width: gif.raw.lsd.width,
+            height: gif.raw.lsd.height,
+            frames: gif.decompressFrames(true)
+        };
+
+        complete(container);
+
+    });
+
+
+});
+
 function start(container, marker, video, input_width, input_height, canvas_draw, render_update, track_update) {
     var vw, vh;
     var sw, sh;
@@ -90,23 +125,35 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     var pivotRoot = new THREE.Object3D();
 
     //Video
-    dogLayer = document.getElementById('testMov');
+
+    /*
+    dogLayer = document.getElementById('dogLayer');
     dogLayer.load(); // must call after setting/changing source
     dogLayer.play();
 
     videoTexture = new THREE.VideoTexture(dogLayer);
-    //videoTexture.minFilter = THREE.LinearFilter;
-    //videoTexture.magFilter = THREE.LinearFilter;
+
     videoTexture.format = THREE.RGBAFormat;
+    */
 
-    let material1 = new THREE.MeshBasicMaterial({ map: videoTexture, transparent: true });
+    GIFLoader('../../Data/gif/DogLayer.gif', async function (container) {
 
-    let geometry1 = new THREE.PlaneGeometry(155, 110);
-    let mesh1 = new THREE.Mesh(geometry1, material1);
-    mesh1.position.set(77, 35, -55);
-    //mesh1.rotation.z = Math.PI / 2;
-    pivotRoot.add(mesh1);
-    //markerRoot1.add(mesh1);
+        const ratio = container.width / container.height;
+        var gifTex = new THREE.ComposedTexture(container);
+
+        let material1 = new THREE.MeshBasicMaterial({
+            map: gifTex,
+            transparent: true
+        });
+
+        let geometry1 = new THREE.PlaneGeometry(155, 110);
+        let mesh1 = new THREE.Mesh(geometry1, material1);
+        mesh1.position.set(77, 35, -55);
+        //mesh1.rotation.z = Math.PI / 2;
+        pivotRoot.add(mesh1);
+        //markerRoot1.add(mesh1);
+    });
+
 
     // the invisibility cloak (box with a hole)
     let geometry0 = new THREE.BoxGeometry(16, 10, 14);
@@ -255,6 +302,8 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     }
 
     var tick = function () {
+
+        THREE.ComposedTexture.update(clock.getDelta());
         draw();
         requestAnimationFrame(tick);
 
@@ -274,11 +323,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
 
         if (!world /*|| dogLayer.readyState !== dogLayer.HAVE_ENOUGH_DATA*/) {
             root.visible = false;
-            //dogLayer.pause();
-            //dogLayer.currentTime = 0;
         } else {
-            //dogLayer.currentTime = 0;
-            ///dogLayer.play();
             root.visible = true;
 
             // interpolate matrix
