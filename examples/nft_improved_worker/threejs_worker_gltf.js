@@ -138,7 +138,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     videoTexture.format = THREE.RGBAFormat;
     */
 
-    GIFLoader('../../Data/gif/DogLayer.gif', async function (container) {
+    GIFLoader('./Data/gif/DogLayer.gif', async function (container) {
 
         const ratio = container.width / container.height;
         var gifTex = new THREE.ComposedTexture(container);
