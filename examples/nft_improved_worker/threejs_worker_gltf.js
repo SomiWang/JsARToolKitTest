@@ -138,7 +138,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     videoTexture.format = THREE.RGBAFormat;
     */
 
-    GIFLoader('../Data/gif/DogLayer.gif', async function (container) {
+    GIFLoader('../Data/Layers/Layer01.gif', async function (container) {
 
         const ratio = container.width / container.height;
         var gifTex = new THREE.ComposedTexture(container);
@@ -151,7 +151,26 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
 
         let geometry1 = new THREE.PlaneGeometry(155, 110);
         let mesh1 = new THREE.Mesh(geometry1, material1);
-        mesh1.position.set(77, 35, -55);
+        mesh1.position.set(77, 0, -55);
+        //mesh1.rotation.z = Math.PI / 2;
+        pivotRoot.add(mesh1);
+        //markerRoot1.add(mesh1);
+    });
+
+    GIFLoader('../Data/Layers/Layer02.gif', async function (container) {
+
+        const ratio = container.width / container.height;
+        var gifTex = new THREE.ComposedTexture(container);
+
+        let material1 = new THREE.MeshBasicMaterial({
+            map: gifTex,
+            transparent: true,
+            side: THREE.DoubleSide,
+        });
+
+        let geometry1 = new THREE.PlaneGeometry(155, 110);
+        let mesh1 = new THREE.Mesh(geometry1, material1);
+        mesh1.position.set(77, 10, -55);
         //mesh1.rotation.z = Math.PI / 2;
         pivotRoot.add(mesh1);
         //markerRoot1.add(mesh1);
