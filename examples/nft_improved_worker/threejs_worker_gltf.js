@@ -139,7 +139,7 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
     videoTexture.format = THREE.RGBAFormat;
     */
 
-    GIFLoader('../Data/Layers/Layer01.gif', async function (container) {
+    GIFLoader('../Data/Layers/AllLayers.gif', async function (container) {
 
         const ratio = container.width / container.height;
         var gifTex = new THREE.ComposedTexture(container);
@@ -158,40 +158,20 @@ function start(container, marker, video, input_width, input_height, canvas_draw,
         //markerRoot1.add(mesh1);
     });
 
-    GIFLoader('../Data/Layers/Layer02.gif', async function (container) {
+    //// the invisibility cloak (box with a hole)
+    //let geometry0 = new THREE.BoxGeometry(16, 10, 14);
+    //geometry0.faces.splice(4, 2); // make hole by removing top two triangles
 
-        const ratio = container.width / container.height;
-        var gifTex = new THREE.ComposedTexture(container);
+    //let material0 = new THREE.MeshBasicMaterial({
+    //    //colorWrite: false
+    //});
 
-        let material1 = new THREE.MeshBasicMaterial({
-            map: gifTex,
-            transparent: true,
-            side: THREE.DoubleSide,
-        });
-
-        let geometry1 = new THREE.PlaneGeometry(155, 110);
-        let mesh1 = new THREE.Mesh(geometry1, material1);
-        mesh1.position.set(77, 10, -55);
-        //mesh1.rotation.z = Math.PI / 2;
-        pivotRoot.add(mesh1);
-        //markerRoot1.add(mesh1);
-    });
-
-
-    // the invisibility cloak (box with a hole)
-    let geometry0 = new THREE.BoxGeometry(16, 10, 14);
-    geometry0.faces.splice(4, 2); // make hole by removing top two triangles
-
-    let material0 = new THREE.MeshBasicMaterial({
-        //colorWrite: false
-    });
-
-    let mesh0 = new THREE.Mesh(geometry0, material0);
-    mesh0.scale.set(8, 8, 8);
-    mesh0.position.set(77, -50, -55);
-    pivotRoot.add(mesh0);
-    root.matrixAutoUpdate = false;
-    root.add(pivotRoot);
+    //let mesh0 = new THREE.Mesh(geometry0, material0);
+    //mesh0.scale.set(8, 8, 8);
+    //mesh0.position.set(77, -50, -55);
+    //pivotRoot.add(mesh0);
+    //root.matrixAutoUpdate = false;
+    //root.add(pivotRoot);
 
     /* Load Model */
     //var threeGLTFLoader = new THREE.GLTFLoader();
